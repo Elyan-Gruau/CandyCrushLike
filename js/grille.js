@@ -1,5 +1,5 @@
 import Cookie from "./cookie.js";
-import { create2DArray } from "./utils.js";
+import {create2DArray} from "./utils.js";
 
 /* Classe principale du jeu, c'est une grille de cookies. Le jeu se joue comme
 Candy Crush Saga etc... c'est un match-3 game... */
@@ -50,22 +50,22 @@ export default class Grille {
         console.log("On a cliqué sur la ligne " + ligne + " et la colonne " + colonne);
         //let cookieCliquee = this.getCookieFromLC(ligne, colonne);
         console.log("Le cookie cliqué est de type " + cookie.type);
-        // highlight + changer classe CSS
         cookie.selectionnee();
-
-
-        if (Grille.selectedCookies.length === 2){ //Swap
-          Cookie.swapCookies(Grille.selectedCookies[0],Grille.selectedCookies[1])
-          setTimeout( function() {
-
-          },500);
-
-        }
 
         // A FAIRE : tester combien de cookies sont sélectionnées
         // si 0 on ajoute le cookie cliqué au tableau
         // si 1 on ajoute le cookie cliqué au tableau
         // et on essaie de swapper
+        if (Grille.selectedCookies.length === 2){ //Swap
+          if (Cookie.distance(Grille.selectedCookies[0],Grille.selectedCookies[1])>1){
+            Grille.selectedCookies[1].deselectionnee();
+          }else{
+            setTimeout( () => {
+              Cookie.swapCookies(Grille.selectedCookies[0],Grille.selectedCookies[1])
+              this.checkAlignement();
+            },200);
+          }
+        }
       }
 
       // A FAIRE : ecouteur de drag'n'drop
@@ -143,5 +143,35 @@ export default class Grille {
 
   static canSelectCookie(){
     return Grille.selectedCookies.length < 2; //todo put in constant
+  }
+
+  checkAlignement(){
+    console.log("checking alignement")
+    //Verical
+    let verCookiesAligned = [];
+    let verAlignType = -1;
+    for (let col = 0; col <this.c;col++){
+      console.log("new column")
+      for (let lin = 0; lin <this.l;lin++){
+        const cookie = this.tabcookies[lin][col];
+        if (cookie.type !== verAlignType){
+          if (verCookiesAligned.length>=3){
+            console.log("align :"+verCookiesAligned.length)//TODO check les changement de lignes
+            for (let i=0; i<verCookiesAligned.length;i++){
+              const c = verCookiesAligned[i];
+              console.log("L:"+c.ligne +" C:"+ c.colonne);
+            }
+          }
+          verAlignType = cookie.type;
+          verCookiesAligned.length = 0;
+        }
+        if (cookie.type === verAlignType){
+          // horAlignCount++;
+          verCookiesAligned.push(cookie);
+        }
+      }
+      verAlignType = -1;
+    }
+    //Horizontal
   }
 }
