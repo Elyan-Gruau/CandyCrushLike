@@ -13,17 +13,23 @@ export default class Cookie {
     "./assets/images/Croissant@2x.png",
     "./assets/images/Cupcake@2x.png",
     "./assets/images/Danish@2x.png",
+    "./assets/images/Danish2@2x.png",
     "./assets/images/Donut@2x.png",
     "./assets/images/Macaroon@2x.png",
+    "./assets/images/Macaroon2@2x.png",
     "./assets/images/SugarCookie@2x.png",
+    "./assets/images/ChocoCookie@2x.png",
   ];
   static urlsImagesSurlignees = [
     "./assets/images/Croissant-Highlighted@2x.png",
     "./assets/images/Cupcake-Highlighted@2x.png",
     "./assets/images/Danish-Highlighted@2x.png",
+    "./assets/images/Danish2-Highlighted@2x.png",
     "./assets/images/Donut-Highlighted@2x.png",
     "./assets/images/Macaroon-Highlighted@2x.png",
+    "./assets/images/Macaroon2-Highlighted@2x.png",
     "./assets/images/SugarCookie-Highlighted@2x.png",
+    "./assets/images/ChocoCookie-Highlighted@2x.png",
   ];
   static urlImagesSpéciales =[
       "./assets/images/"

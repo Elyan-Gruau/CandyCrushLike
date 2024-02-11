@@ -3,10 +3,13 @@ import {create2DArray} from "./utils.js";
 
 /* Classe principale du jeu, c'est une grille de cookies. Le jeu se joue comme
 Candy Crush Saga etc... c'est un match-3 game... */
-let coup = 0;
+let coups = 0;
 let score = 0;
-let niveau = 0;
+let level = 0;
 let multiplier = 1;
+
+const startCookieNumber = 4;
+const maxLevel = 5;
 
 export default class Grille {
   /**
@@ -19,7 +22,7 @@ export default class Grille {
     this.c = c;
     this.l = l;
 
-    this.tabcookies = this.remplirTableauDeCookies(6)
+    this.tabcookies = this.remplirTableauDeCookies(startCookieNumber + level);
   }
 
   /**
@@ -67,6 +70,7 @@ export default class Grille {
           }else{
             setTimeout( () => {
               Cookie.swapCookies(Grille.selectedCookies[0],Grille.selectedCookies[1])
+              increaseCoups();
               this.checkAlignement();
             },200);
           }
@@ -162,17 +166,20 @@ export default class Grille {
     hasAlignement = hasAlignement || this.checkAlignmentHorizontal();
     if (hasAlignement){
       // console.log("do fall")
+      multiplier *= 2;
       this.fall();
       setTimeout(() => {
         this.checkAlignement()
       },1500);
+    }else{
+      multiplier = 1;
     }
   }
 
   fall(){
     console.log("falling")
 
-    const newCookieTab = this.remplirTableauDeCookies(5);
+    const newCookieTab = this.remplirTableauDeCookies(startCookieNumber + level);
 
     for (let col = 0; col <this.c;col++){
       //trouver les trous
@@ -277,8 +284,24 @@ export default class Grille {
 }
 
 function addScore(amount){
-  score += amount;
+  score += amount * multiplier;
   const scoreElement = document.getElementById("score");
   scoreElement.innerText = "Score:"+score;
-  console.log(scoreElement.innerHTML);
+  increaseLevel();
+
+}
+
+function increaseCoups(){
+  coups ++;
+  const coupsElement = document.getElementById("coups");
+  coupsElement.innerText = "Coups:"+coups;
+}
+
+function increaseLevel(){
+  level = parseInt(score / 100);
+  if (level > maxLevel) {
+    level = maxLevel;
+  }
+  const levelElement = document.getElementById("level");
+  levelElement.innerText = "Niveau:"+level;
 }
