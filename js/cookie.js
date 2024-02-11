@@ -25,6 +25,9 @@ export default class Cookie {
     "./assets/images/Macaroon-Highlighted@2x.png",
     "./assets/images/SugarCookie-Highlighted@2x.png",
   ];
+  static urlImagesSpéciales =[
+      "./assets/images/"
+  ]
 
   constructor(type, ligne, colonne) {
     this.type = type;
@@ -130,5 +133,9 @@ export default class Cookie {
     const url = Cookie.urlsImagesNormales[this.type];
     this.htmlImage = document.createElement("img");
     console.log("render")
+  }
+
+  isPopped(){
+    return this.htmlImage.classList.contains("cookies-popped");
   }
 }

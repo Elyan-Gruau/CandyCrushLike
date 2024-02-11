@@ -66,3 +66,7 @@
     transition: 0.2s all;
 
 }
+
+.cookies-popped{
+    filter : opacity(0.1);
+}
