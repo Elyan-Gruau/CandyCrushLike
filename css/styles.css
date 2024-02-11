@@ -69,4 +69,5 @@
 
 .cookies-popped{
     filter : opacity(0.1);
+    transition: 0.2s all;
 }
