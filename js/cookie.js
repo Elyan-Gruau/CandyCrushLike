@@ -109,8 +109,6 @@ export default class Cookie {
     // c1.render();
     // c2.render();
 
-
-
     // et on remet les images correspondant au look
     // "désélectionné"
   }
@@ -137,5 +135,20 @@ export default class Cookie {
 
   isPopped(){
     return this.htmlImage.classList.contains("cookies-popped");
+  }
+
+  pop(){
+    this.htmlImage.classList.add('cookies-popped');
+  }
+  unpop(){
+    this.htmlImage.classList.remove('cookies-popped');
+  }
+
+  highlight(){
+    this.htmlImage.src = Cookie.urlsImagesSurlignees[this.type];
+  }
+
+  unhighlight(){
+    this.htmlImage.src = Cookie.urlsImagesNormales[this.type];
   }
 }

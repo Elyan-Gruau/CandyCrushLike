@@ -47,7 +47,7 @@ export default class Grille {
       let img = cookie.htmlImage;
 
       img.onclick = (event) => {
-        console.log("On a cliqué sur la ligne " + ligne + " et la colonne " + colonne);
+        console.log("On a cliqué sur la l :" + ligne + " c :" + colonne);
         //let cookieCliquee = this.getCookieFromLC(ligne, colonne);
         console.log("Le cookie cliqué est de type " + cookie.type);
         cookie.selectionnee();
@@ -79,6 +79,10 @@ export default class Grille {
   getCookieFromLC(ligne, colonne) {
     return this.tabcookies[ligne][colonne];
   }
+
+  setCookieFromLC(ligne, colonne, cookie) {
+    this.tabcookies[ligne][colonne].type = cookie.type;
+  }
   
   /**
    * Initialisation du niveau de départ. Le paramètre est le nombre de cookies différents
@@ -105,15 +109,17 @@ export default class Grille {
     // remplir
     for(let l = 0; l < this.l; l++) {
       for(let c =0; c < this.c; c++) {
-
-        // on génère un nombre aléatoire entre 0 et nbDeCookiesDifferents-1
-        const type = Math.floor(Math.random()*nbDeCookiesDifferents);
-        //console.log(type)
-        tab[l][c] = new Cookie(type, l, c);
+        tab[l][c] = this.createNewRandomCookie(nbDeCookiesDifferents,l,c);
       }
     }
 
     return tab;
+  }
+
+  createNewRandomCookie(nbDeCookiesDifferents,l,c){
+    const type = Math.floor(Math.random()*nbDeCookiesDifferents);
+    //console.log(type)
+    return new Cookie(type, l, c);
   }
 
 
@@ -147,16 +153,56 @@ export default class Grille {
 
   checkAlignement(){
     console.log("checking alignement")
+    this.checkAlignmentVertical();
+    this.checkAlignmentHorizontal();
+    this.fall();
+  }
+
+  fall(){
+    console.log("falling")
+
+    const newCookieTab = this.remplirTableauDeCookies(5);
+
+    for (let col = 0; col <this.c;col++){
+      //trouver les trous
+      //TODO garder la méthode de l'enregistrement des cookie encore en vie, et recréer une nouvelle grille avec.
+      let toKeep = [];
+      for (let lin = 0; lin <this.l;lin++) {
+        const cookie = this.getCookieFromLC(lin, col);
+        if (!cookie.isPopped()) {
+          toKeep.push(cookie);
+        }
+      }
+
+      let lineToInsert = this.l;
+      //Ajouter les anciens cookies aux nouveaux
+      for (let i = 0; i < toKeep.length; i++) {
+        lineToInsert--;
+        let newCookie = toKeep[i];
+        newCookie.colonne = col;
+        newCookie.ligne = lineToInsert;
+        newCookieTab[lineToInsert][col] = newCookie;
+        newCookie.highlight();
+
+
+      }
+    }
+    this.tabcookies =  newCookieTab;
+    setTimeout(() => this.refresh(),1000);
+    // this.refresh();
+  }
+
+  checkAlignmentVertical(){
     //Verical
     let verCookiesAligned = [];
     let verAlignType = -1;
     for (let col = 0; col <this.c;col++){
-      console.log("new column")
       for (let lin = 0; lin <this.l;lin++){
         const cookie = this.tabcookies[lin][col];
         if (cookie.type !== verAlignType){
           if (verCookiesAligned.length>=3){
-            console.log("align :"+verCookiesAligned.length)//TODO check les changement de lignes
+            console.log("align :"+verCookiesAligned.length)
+            this.popCookies(verCookiesAligned);
             for (let i=0; i<verCookiesAligned.length;i++){
               const c = verCookiesAligned[i];
               console.log("L:"+c.ligne +" C:"+ c.colonne);
@@ -166,12 +212,52 @@ export default class Grille {
           verCookiesAligned.length = 0;
         }
         if (cookie.type === verAlignType){
-          // horAlignCount++;
           verCookiesAligned.push(cookie);
         }
       }
       verAlignType = -1;
     }
-    //Horizontal
+  }
+
+  checkAlignmentHorizontal(){
+    let horCookiesAligned = [];
+    let horAlignType = -1;
+    for (let lin = 0; lin <this.l;lin++){
+      for (let col = 0; col <this.c;col++){
+        const cookie = this.tabcookies[lin][col];
+        if (cookie.type !== horAlignType){
+          if (horCookiesAligned.length>=3){
+            console.log("align :"+horCookiesAligned.length)
+            this.popCookies(horCookiesAligned);
+            for (let i=0; i<horCookiesAligned.length;i++){
+              const c = horCookiesAligned[i];
+              console.log("L:"+c.ligne +" C:"+ c.colonne);
+            }
+          }
+          horAlignType = cookie.type;
+          horCookiesAligned.length = 0;
+        }
+        if (cookie.type === horAlignType){
+          // horAlignCount++;
+          horCookiesAligned.push(cookie);
+        }
+      }
+      horAlignType = -1;
+    }
+  }
+
+  popCookies(cookies){
+    for (let i = 0; i < cookies.length; i++){
+      const cookie = cookies[i];
+      cookie.pop();
+    }
+  }
+
+  refresh(){
+    let caseDivs = document.querySelectorAll("#grille div");
+    caseDivs.forEach((div, index) => {
+      div.innerHTML = '';
+    });
+    this.showCookies();
   }
 }
