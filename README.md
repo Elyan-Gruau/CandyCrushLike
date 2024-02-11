@@ -8,5 +8,7 @@ Elyan GRUAU - G1
   - 5 cookies alignés : 3 pts
   - etc ...
 - Animations
-- Cutes en cascade
-- Compteur de nombre de coup
+- Chutes en cascade
+- Compteur de nombre de coups
+- 5 niveaux de difficulté
+- multiplicateur de score x2 à chaque cascade
