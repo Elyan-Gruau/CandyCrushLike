@@ -3,6 +3,11 @@ import {create2DArray} from "./utils.js";
 
 /* Classe principale du jeu, c'est une grille de cookies. Le jeu se joue comme
 Candy Crush Saga etc... c'est un match-3 game... */
+let coup = 0;
+let score = 0;
+let niveau = 0;
+let multiplier = 1;
+
 export default class Grille {
   /**
    * Constructeur de la grille
@@ -153,9 +158,15 @@ export default class Grille {
 
   checkAlignement(){
     console.log("checking alignement")
-    this.checkAlignmentVertical();
-    this.checkAlignmentHorizontal();
-    this.fall();
+    let hasAlignement = this.checkAlignmentVertical();
+    hasAlignement = hasAlignement || this.checkAlignmentHorizontal();
+    if (hasAlignement){
+      // console.log("do fall")
+      this.fall();
+      setTimeout(() => {
+        this.checkAlignement()
+      },1500);
+    }
   }
 
   fall(){
@@ -176,19 +187,21 @@ export default class Grille {
 
       let lineToInsert = this.l;
       //Ajouter les anciens cookies aux nouveaux
-      for (let i = 0; i < toKeep.length; i++) {
+      for (let i = toKeep.length-1; 0 <= i ; i--) {
         lineToInsert--;
         let newCookie = toKeep[i];
         newCookie.colonne = col;
         newCookie.ligne = lineToInsert;
         newCookieTab[lineToInsert][col] = newCookie;
-        newCookie.highlight();
-
-
+        // newCookie.highlight();
       }
     }
     this.tabcookies =  newCookieTab;
-    setTimeout(() => this.refresh(),1000);
+    setTimeout(() => {
+      this.refresh();
+      // this.checkAlignement();
+    },1000);
+
     // this.refresh();
   }
 
@@ -196,17 +209,16 @@ export default class Grille {
     //Verical
     let verCookiesAligned = [];
     let verAlignType = -1;
+    let hasAlignment = false;
     for (let col = 0; col <this.c;col++){
       for (let lin = 0; lin <this.l;lin++){
         const cookie = this.tabcookies[lin][col];
         if (cookie.type !== verAlignType){
           if (verCookiesAligned.length>=3){
             console.log("align :"+verCookiesAligned.length)
+            addScore(verCookiesAligned.length - 2);
             this.popCookies(verCookiesAligned);
-            for (let i=0; i<verCookiesAligned.length;i++){
-              const c = verCookiesAligned[i];
-              console.log("L:"+c.ligne +" C:"+ c.colonne);
-            }
+            hasAlignment = true;
           }
           verAlignType = cookie.type;
           verCookiesAligned.length = 0;
@@ -217,22 +229,22 @@ export default class Grille {
       }
       verAlignType = -1;
     }
+    return hasAlignment;
   }
 
   checkAlignmentHorizontal(){
     let horCookiesAligned = [];
     let horAlignType = -1;
+    let hasAlignment = false;
     for (let lin = 0; lin <this.l;lin++){
       for (let col = 0; col <this.c;col++){
         const cookie = this.tabcookies[lin][col];
         if (cookie.type !== horAlignType){
           if (horCookiesAligned.length>=3){
             console.log("align :"+horCookiesAligned.length)
+            addScore(horCookiesAligned.length - 2);
             this.popCookies(horCookiesAligned);
-            for (let i=0; i<horCookiesAligned.length;i++){
-              const c = horCookiesAligned[i];
-              console.log("L:"+c.ligne +" C:"+ c.colonne);
-            }
+            hasAlignment = true;
           }
           horAlignType = cookie.type;
           horCookiesAligned.length = 0;
@@ -244,12 +256,14 @@ export default class Grille {
       }
       horAlignType = -1;
     }
+    return hasAlignment;
   }
 
   popCookies(cookies){
     for (let i = 0; i < cookies.length; i++){
       const cookie = cookies[i];
       cookie.pop();
+      console.log("L:"+cookie.ligne +" C:"+ cookie.colonne);
     }
   }
 
@@ -260,4 +274,11 @@ export default class Grille {
     });
     this.showCookies();
   }
+}
+
+function addScore(amount){
+  score += amount;
+  const scoreElement = document.getElementById("score");
+  scoreElement.innerText = "Score:"+score;
+  console.log(scoreElement.innerHTML);
 }
