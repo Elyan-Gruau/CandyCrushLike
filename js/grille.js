@@ -55,7 +55,11 @@ export default class Grille {
 
 
         if (Grille.selectedCookies.length === 2){ //Swap
-          console.log("swap")
+          Cookie.swapCookies(Grille.selectedCookies[0],Grille.selectedCookies[1])
+          setTimeout( function() {
+
+          },500);
+
         }
 
         // A FAIRE : tester combien de cookies sont sélectionnées

@@ -34,6 +34,8 @@
 #grille div {
     border: 2px solid rgba(100, 100, 100, 0.5);
     transition: 0.5s all;
+    height: 80px;
+    width: 80px;
 }
 
 #grille div:hover {

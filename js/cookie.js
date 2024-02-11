@@ -58,6 +58,7 @@ export default class Cookie {
     // A FAIRE
     if (!this.isSelected && Grille.canSelectCookie()){
       this.htmlImage.classList.add('cookies-selected');
+      this.htmlImage.src = Cookie.urlsImagesSurlignees[this.type];
       Grille.addSelectedCookie(this);
       this.isSelected = true;
     }else{
@@ -73,6 +74,7 @@ export default class Cookie {
       // console.log('deselectionnee')
       Grille.removeSelectedCookie(this);
       this.htmlImage.classList.remove('cookies-selected');
+      this.htmlImage.src = Cookie.urlsImagesNormales[this.type];
       this.isSelected = false;
     }
   }
@@ -81,6 +83,30 @@ export default class Cookie {
     // A FAIRE
     console.log("SWAP C1 C2");
     // On échange leurs images et types
+    let tmpCookie = {
+      type : c1.type,
+      htmlImage : c1.htmlImage,
+      ID : c1.id
+    }
+
+    let typeTmp = c1.type;
+
+
+    c1.type = c2.type;
+    // c1.htmlImage = c2.htmlImage;
+    // c1.ID = c2.ID;
+
+    c2.type =  typeTmp;
+    // c2.htmlImage = tmpCookie.htmlImage;
+    // c2.ID = tmpCookie.ID;
+
+    c1.deselectionnee();
+    c2.deselectionnee();
+
+    // c1.render();
+    // c2.render();
+
+
 
     // et on remet les images correspondant au look
     // "désélectionné"
@@ -98,5 +124,11 @@ export default class Cookie {
     const distance = Math.sqrt((c2 - c1) * (c2 - c1) + (l2 - l1) * (l2 - l1));
     console.log("Distance = " + distance);
     return distance;
+  }
+
+  render(){
+    const url = Cookie.urlsImagesNormales[this.type];
+    this.htmlImage = document.createElement("img");
+    console.log("render")
   }
 }
